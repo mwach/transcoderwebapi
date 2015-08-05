@@ -1,0 +1,47 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+xmlns:tns="http://dto.transcoderwebapi.pl.com.itti"
+           targetNamespace="http://dto.transcoderwebapi.pl.com.itti" elementFormDefault="qualified">
+
+    <xs:simpleType name="bitrate">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="GBP"/>
+            <xs:enumeration value="EUR"/>
+            <xs:enumeration value="PLN"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="size">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="HD"/>
+            <xs:enumeration value="LD"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <xs:complexType name="configuration">
+        <xs:sequence>
+            <xs:element name="bitrate" type="tns:bitrate"/>
+            <xs:element name="fps" type="xs:int"/>
+            <xs:element name="size" type="tns:size"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+
+    <xs:element name="setConfigurationRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="configuration" type="tns:configuration"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getConfigurationResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="configuration" type="tns:configuration"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
