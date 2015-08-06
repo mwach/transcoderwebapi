@@ -29,9 +29,11 @@ public class TranscoderEndpoint {
 	}
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart="setConfigurationRequest")
-	public void setConfiguration(@RequestPayload SetConfigurationRequest request){
+	public void setConfiguration(@RequestPayload SetConfigurationRequest request) throws SoapException{
+		
 		request.setConfiguration(new Configuration());
 		request = null;;
+		throw new SoapException("sdas");
 	}
 
 }
