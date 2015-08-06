@@ -1,6 +1,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-xmlns:tns="http://dto.transcoderwebapi.pl.com.itti"
-           targetNamespace="http://dto.transcoderwebapi.pl.com.itti" elementFormDefault="qualified">
+xmlns:tns="http://dto.transcoder.pl.com.itti"
+           targetNamespace="http://dto.transcoder.pl.com.itti" 
+           elementFormDefault="qualified">
 
     <xs:simpleType name="bitrate">
         <xs:restriction base="xs:string">
@@ -34,6 +35,12 @@ xmlns:tns="http://dto.transcoderwebapi.pl.com.itti"
                 <xs:element name="configuration" type="tns:configuration"/>
             </xs:sequence>
         </xs:complexType>
+    </xs:element>
+
+    <xs:element name="setConfigurationResponse">
+    </xs:element>
+
+    <xs:element name="getConfigurationRequest">
     </xs:element>
 
     <xs:element name="getConfigurationResponse">
