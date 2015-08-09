@@ -14,9 +14,7 @@ import itti.com.pl.transcoder.config.WebServiceSoapConfig;
 
 public class Initializer implements WebApplicationInitializer {
 
-	public void onStartup(ServletContext servletContext)
-			throws ServletException {
-
+	public void onStartup(ServletContext servletContext) throws ServletException {
 
 		AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
 		ctx.register(WebAppConfig.class);
@@ -24,8 +22,7 @@ public class Initializer implements WebApplicationInitializer {
 		ctx.setServletContext(servletContext);
 		DispatcherServlet servlet = new DispatcherServlet();
 		servlet.setApplicationContext(ctx);
-		Dynamic dynamic = servletContext.addServlet("dispatcher",
-				servlet);
+		Dynamic dynamic = servletContext.addServlet("dispatcher", servlet);
 		dynamic.addMapping("/rest/*");
 		dynamic.setLoadOnStartup(1);
 
@@ -35,12 +32,8 @@ public class Initializer implements WebApplicationInitializer {
 		MessageDispatcherServlet mdServlet = new MessageDispatcherServlet();
 		mdServlet.setTransformWsdlLocations(true);
 		mdServlet.setApplicationContext(soapCtx);
-		Dynamic soapDynamic = servletContext.addServlet("soapdispatcher",
-				mdServlet);
+		Dynamic soapDynamic = servletContext.addServlet("soapdispatcher", mdServlet);
 		soapDynamic.addMapping("/ws/*");
 		soapDynamic.setLoadOnStartup(1);
-
-
 	}
-
 }
