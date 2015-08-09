@@ -1,4 +1,4 @@
-package itti.com.pl.transcoder.controller;
+package itti.com.pl.transcoder.web.ws;
 
 import org.springframework.ws.soap.server.endpoint.annotation.FaultCode;
 import org.springframework.ws.soap.server.endpoint.annotation.SoapFault;

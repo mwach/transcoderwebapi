@@ -1,4 +1,4 @@
-package itti.com.pl.transcoder.config.ws;
+package itti.com.pl.transcoder.config;
 
 import java.util.List;
 
@@ -9,19 +9,14 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.ws.config.annotation.EnableWs;
 import org.springframework.ws.config.annotation.WsConfigurerAdapter;
 import org.springframework.ws.server.EndpointInterceptor;
-import org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor;
-import org.springframework.ws.soap.server.endpoint.SoapFaultMappingExceptionResolver;
 import org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor;
 import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
-import org.springframework.xml.validation.ValidationErrorHandler;
 import org.springframework.xml.xsd.SimpleXsdSchema;
 import org.springframework.xml.xsd.XsdSchema;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 @Configuration
 @EnableWs
-@ComponentScan("itti.com.pl.transcoder.controller")
+@ComponentScan({"itti.com.pl.transcoder.web.ws", "itti.com.pl.transcoder.service"})
 public class WebServiceSoapConfig extends WsConfigurerAdapter {
 
 	@Bean(name = "configuration")
@@ -37,17 +32,16 @@ public class WebServiceSoapConfig extends WsConfigurerAdapter {
 	@Override
 	public void addInterceptors(List<EndpointInterceptor> interceptors) {
 		interceptors.add(payloadValidatingInterceptor());
-//		interceptors.add(new PayloadLoggingInterceptor());
+		// interceptors.add(new PayloadLoggingInterceptor());
 	}
 
-	private PayloadValidatingInterceptor payloadValidatingInterceptor(){
-PayloadValidatingInterceptor payloadValidatingInterceptor = new PayloadValidatingInterceptor();
-payloadValidatingInterceptor.setXsdSchema(schema());
-payloadValidatingInterceptor.setValidateRequest(true);
-payloadValidatingInterceptor.setValidateResponse(true);
+	private PayloadValidatingInterceptor payloadValidatingInterceptor() {
+		PayloadValidatingInterceptor payloadValidatingInterceptor = new PayloadValidatingInterceptor();
+		payloadValidatingInterceptor.setXsdSchema(schema());
+		payloadValidatingInterceptor.setValidateRequest(true);
+		payloadValidatingInterceptor.setValidateResponse(true);
 
-
-return payloadValidatingInterceptor;
+		return payloadValidatingInterceptor;
 	}
 
 	@Bean

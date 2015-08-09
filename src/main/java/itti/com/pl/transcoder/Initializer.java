@@ -10,7 +10,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.ws.transport.http.MessageDispatcherServlet;
 
 import itti.com.pl.transcoder.config.WebAppConfig;
-import itti.com.pl.transcoder.config.ws.WebServiceSoapConfig;
+import itti.com.pl.transcoder.config.WebServiceSoapConfig;
 
 public class Initializer implements WebApplicationInitializer {
 
@@ -26,7 +26,7 @@ public class Initializer implements WebApplicationInitializer {
 		servlet.setApplicationContext(ctx);
 		Dynamic dynamic = servletContext.addServlet("dispatcher",
 				servlet);
-		dynamic.addMapping("/base/*");
+		dynamic.addMapping("/rest/*");
 		dynamic.setLoadOnStartup(1);
 
 		AnnotationConfigWebApplicationContext soapCtx = new AnnotationConfigWebApplicationContext();

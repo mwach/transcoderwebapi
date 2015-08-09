@@ -8,8 +8,8 @@ import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 @Configuration
-@ComponentScan("itti.com.pl.transcoder.controller")
 @EnableWebMvc
+@ComponentScan({"itti.com.pl.transcoder.web.rest", "itti.com.pl.transcoder.service"})
 public class WebAppConfig {
 
 	@Bean
