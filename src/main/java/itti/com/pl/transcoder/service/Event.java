@@ -11,6 +11,15 @@ final class Event {
 
 	private Event(){}
 
+	public String getAction(){
+		return action;
+	}
+	public int getFilterId(){
+		return filterId;
+	}
+	public Map<String, Integer> getParams(){
+		return new HashMap<>(params);
+	}
 	public static class EventBuilder{
 
 		private Event event = new Event();

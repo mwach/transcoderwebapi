@@ -36,10 +36,15 @@ public class TranscoderFacade {
 		configuration.setFps(environment.getProperty("fps", Integer.class));
 		configuration.setBitrate(environment.getProperty("bitrate", Bitrate.class));
 		configuration.setSize(environment.getProperty("size", Size.class));
-		
-		socketApi = new SocketApi(
+		setConfiguration(configuration);
+
+		setSocketAPI(new SocketApi(
 				environment.getProperty("transcoder_admin_ip", String.class),
-				environment.getProperty("transcoder_admin_port", Integer.class));
+				environment.getProperty("transcoder_admin_port", Integer.class)));
+	}
+
+	void setSocketAPI(SocketApi socketApi) {
+		this.socketApi = socketApi;
 	}
 
 	public void start() {
@@ -80,16 +85,29 @@ public class TranscoderFacade {
 	}
 
 	public void setConfiguration(Configuration configuration) {
-		if(configuration.getFps() != this.configuration.getFps()){
+		
+		if(this.configuration == null){
+			this.configuration = configuration;
+		}
+		if(isEqual(configuration.getFps(), this.configuration.getFps())){
 			setFps(configuration.getFps());
 		}
-		if(configuration.getBitrate() != this.configuration.getBitrate()){
+		if(isEqual(configuration.getBitrate(), this.configuration.getBitrate())){
 			setBitrate(configuration.getBitrate());
 		}
-		if(configuration.getSize() != this.configuration.getSize()){
+		if(isEqual(configuration.getSize(), this.configuration.getSize())){
 			setSize(configuration.getSize());
 		}
 		this.configuration = configuration;
+	}
+
+	private boolean isEqual(Object first, Object second){
+		if(first == null && second == null){
+			return true;
+		}else if(first == null || second == null){
+			return false;
+		}
+		return first.equals(second);
 	}
 
 	private void setFps(int fps) {
@@ -111,7 +129,11 @@ public class TranscoderFacade {
 	}
 
 	public Configuration getConfiguration() {
-		return configuration;
+		Configuration cfg = new Configuration();
+		cfg.setBitrate(configuration.getBitrate());
+		cfg.setFps(configuration.getFps());
+		cfg.setSize(configuration.getSize());
+		return cfg;
 	}
 
 	public State getState() {
