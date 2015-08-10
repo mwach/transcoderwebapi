@@ -75,6 +75,8 @@
 				<configuration>
 					<verbose>true</verbose>
 					<fork>true</fork>
+					<source>${java.compiler}</source>
+					<target>${java.compiler}</target>
 					<compilerVersion>${java.compiler}</compilerVersion>
 				</configuration>
 			</plugin>
