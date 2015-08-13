@@ -1,34 +1,45 @@
 package itti.com.pl.transcoder.service;
 
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import itti.com.pl.transcoder.config.TestConfig;
 import itti.com.pl.transcoder.dto.Bitrate;
 import itti.com.pl.transcoder.dto.Configuration;
 import itti.com.pl.transcoder.dto.Size;
 import itti.com.pl.transcoder.helper.SocketApi;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = TestConfig.class, 
+loader = AnnotationConfigContextLoader.class)
+@ActiveProfiles(profiles = "dev")
 public class TranscoderFacadeTest {
 
-	private TranscoderFacade transcoderFacade = null;
+	@Autowired
+	private TranscoderFacade transcoderFacade;
+
+	@Autowired
+	private Environment environment;
 	private SocketApi socketApi = null;
 
-	@Before
-	public void beforeTest(){
-		
+	@Test
+	public void beforeClass() throws Exception{
+
+		Assert.assertNotNull(environment);
+		Assert.assertNotNull(environment.getProperty("size"));
 		socketApi = Mockito.mock(SocketApi.class);		
-		transcoderFacade = new TranscoderFacade();
 		transcoderFacade.setSocketAPI(socketApi);
 		transcoderFacade.setConfiguration(new Configuration());
+		transcoderFacade.start();
 	}
-
-	@Test
-	public void setNewConfiguration(){
-		Configuration configuration = createConfiguration(Bitrate.MB2, 34, Size.FHD);
-		transcoderFacade.setConfiguration(configuration);
-	}
-
 
 	private Configuration createConfiguration(Bitrate bitrate, int fps, Size size){
 		Configuration configuration = new Configuration();

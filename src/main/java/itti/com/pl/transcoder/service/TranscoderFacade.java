@@ -85,19 +85,6 @@ public class TranscoderFacade {
 	}
 
 	public void setConfiguration(Configuration configuration) {
-		
-		if(this.configuration == null){
-			this.configuration = configuration;
-		}
-		if(isEqual(configuration.getFps(), this.configuration.getFps())){
-			setFps(configuration.getFps());
-		}
-		if(isEqual(configuration.getBitrate(), this.configuration.getBitrate())){
-			setBitrate(configuration.getBitrate());
-		}
-		if(isEqual(configuration.getSize(), this.configuration.getSize())){
-			setSize(configuration.getSize());
-		}
 		this.configuration = configuration;
 	}
 
