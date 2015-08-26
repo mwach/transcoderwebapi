@@ -7,7 +7,7 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 import itti.com.pl.transcoder.dto.GetConfigurationResponse;
-import itti.com.pl.transcoder.dto.GetEncoderStatusResponse;
+import itti.com.pl.transcoder.dto.GetEncoderStateResponse;
 import itti.com.pl.transcoder.dto.SetConfigurationRequest;
 import itti.com.pl.transcoder.service.TranscoderFacade;
 
@@ -31,11 +31,11 @@ public class TranscoderEndpoint {
 		transcoderFacade.stop();
 	}
 
-	@PayloadRoot(namespace = NAMESPACE_URI, localPart="getEncoderStatusRequest")
-	public GetEncoderStatusResponse status() throws SoapException{
+	@PayloadRoot(namespace = NAMESPACE_URI, localPart="getEncoderStateRequest")
+	public GetEncoderStateResponse status() throws SoapException{
 		
-		GetEncoderStatusResponse response = new GetEncoderStatusResponse();
-		response.setStatus(transcoderFacade.getState());
+		GetEncoderStateResponse response = new GetEncoderStateResponse();
+		response.setState(transcoderFacade.getState());
 		return response;
 	}
 

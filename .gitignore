@@ -4,3 +4,4 @@
 target/**
 build/**
 src/main/java/itti/com/pl/transcoder/dto/
+bin/**

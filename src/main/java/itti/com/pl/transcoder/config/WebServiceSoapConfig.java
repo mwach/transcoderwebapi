@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.ws.config.annotation.EnableWs;
 import org.springframework.ws.config.annotation.WsConfigurerAdapter;
@@ -17,6 +18,7 @@ import org.springframework.xml.xsd.XsdSchema;
 @Configuration
 @EnableWs
 @ComponentScan({"itti.com.pl.transcoder.web.ws", "itti.com.pl.transcoder.service"})
+@PropertySource("classpath:transcoder.properties")
 public class WebServiceSoapConfig extends WsConfigurerAdapter {
 
 	@Bean(name = "configuration")

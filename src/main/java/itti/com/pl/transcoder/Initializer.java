@@ -19,21 +19,34 @@ public class Initializer implements WebApplicationInitializer {
 		AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
 		ctx.register(WebAppConfig.class);
 
+		ctx.register(WebServiceSoapConfig.class);
+
 		ctx.setServletContext(servletContext);
+		ctx.refresh();
 		DispatcherServlet servlet = new DispatcherServlet();
 		servlet.setApplicationContext(ctx);
 		Dynamic dynamic = servletContext.addServlet("dispatcher", servlet);
 		dynamic.addMapping("/rest/*");
 		dynamic.setLoadOnStartup(1);
 
-		AnnotationConfigWebApplicationContext soapCtx = new AnnotationConfigWebApplicationContext();
-		soapCtx.register(WebServiceSoapConfig.class);
-		soapCtx.setServletContext(servletContext);
 		MessageDispatcherServlet mdServlet = new MessageDispatcherServlet();
 		mdServlet.setTransformWsdlLocations(true);
-		mdServlet.setApplicationContext(soapCtx);
+		mdServlet.setApplicationContext(ctx);
 		Dynamic soapDynamic = servletContext.addServlet("soapdispatcher", mdServlet);
 		soapDynamic.addMapping("/ws/*");
 		soapDynamic.setLoadOnStartup(1);
+
+//		AnnotationConfigWebApplicationContext soapCtx = new AnnotationConfigWebApplicationContext();
+//		soapCtx.register(WebServiceSoapConfig.class);
+//		soapCtx.setServletContext(servletContext);
+//		soapCtx.refresh();
+//		MessageDispatcherServlet mdServlet = new MessageDispatcherServlet();
+//		mdServlet.setTransformWsdlLocations(true);
+//		mdServlet.setApplicationContext(soapCtx);
+//		Dynamic soapDynamic = servletContext.addServlet("soapdispatcher", mdServlet);
+//		soapDynamic.addMapping("/ws/*");
+//		soapDynamic.setLoadOnStartup(1);
+
+	
 	}
 }

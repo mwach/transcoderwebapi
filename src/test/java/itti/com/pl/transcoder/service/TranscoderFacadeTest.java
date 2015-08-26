@@ -1,6 +1,7 @@
 package itti.com.pl.transcoder.service;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -17,6 +18,7 @@ import itti.com.pl.transcoder.dto.Configuration;
 import itti.com.pl.transcoder.dto.Size;
 import itti.com.pl.transcoder.helper.SocketApi;
 
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class, 
 loader = AnnotationConfigContextLoader.class)

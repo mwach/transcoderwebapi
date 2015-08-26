@@ -13,16 +13,19 @@
 
 	<xs:simpleType name="bitrate">
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="GBP" />
-			<xs:enumeration value="EUR" />
-			<xs:enumeration value="PLN" />
+			<xs:enumeration value="MB_4" />
+			<xs:enumeration value="MB_2" />
+			<xs:enumeration value="MB_1" />
+			<xs:enumeration value="MB_05" />
 		</xs:restriction>
 	</xs:simpleType>
 
 	<xs:simpleType name="size">
 		<xs:restriction base="xs:string">
+			<xs:enumeration value="FHD" />
 			<xs:enumeration value="HD" />
-			<xs:enumeration value="LD" />
+			<xs:enumeration value="SD" />
+			<xs:enumeration value="CIF" />
 		</xs:restriction>
 	</xs:simpleType>
 

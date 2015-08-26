@@ -1,8 +1,5 @@
 package itti.com.pl.transcoder.service;
 
-import java.io.Closeable;
-import java.io.IOException;
-
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +10,10 @@ import itti.com.pl.transcoder.dto.Bitrate;
 import itti.com.pl.transcoder.dto.Configuration;
 import itti.com.pl.transcoder.dto.Size;
 import itti.com.pl.transcoder.dto.State;
+import itti.com.pl.transcoder.helper.BitrateMapper;
 import itti.com.pl.transcoder.helper.JSONApi;
+import itti.com.pl.transcoder.helper.ProcessHelper;
+import itti.com.pl.transcoder.helper.SizeMapper;
 import itti.com.pl.transcoder.helper.SocketApi;
 import itti.com.pl.transcoder.service.Event.EventBuilder;
 
@@ -25,22 +25,42 @@ public class TranscoderFacade {
 	@Autowired
 	private Environment environment;
 
-	private Process process = null;
 	private Configuration configuration = null;
 
 	private SocketApi socketApi;
 
+	private ProcessHelper processHelper;
+
 	@PostConstruct
 	private void postConstruct(){
-		configuration = new Configuration();
+		setProcessHelper(getDefaultProcessHelper());
+		setSocketAPI(getDefaultSocketAPI());
+		setConfiguration(getDefaultConfiguration());
+	}
+
+	private void setProcessHelper(ProcessHelper processHelper) {
+		this.processHelper = processHelper;
+	}
+
+	private SocketApi getDefaultSocketAPI() {
+		return new SocketApi(environment.getProperty("transcoder_admin_ip", String.class),
+				environment.getProperty("transcoder_admin_port", Integer.class));
+	}
+
+	private Configuration getDefaultConfiguration() {
+		Configuration configuration = new Configuration();
 		configuration.setFps(environment.getProperty("fps", Integer.class));
 		configuration.setBitrate(environment.getProperty("bitrate", Bitrate.class));
 		configuration.setSize(environment.getProperty("size", Size.class));
-		setConfiguration(configuration);
+		return configuration;
+	}
 
-		setSocketAPI(new SocketApi(
-				environment.getProperty("transcoder_admin_ip", String.class),
-				environment.getProperty("transcoder_admin_port", Integer.class)));
+	private ProcessHelper getDefaultProcessHelper() {
+		ProcessHelper processHelper = new ProcessHelper(
+				environment.getProperty("sh_cmd", String.class),
+				environment.getProperty("ps_cmd", String.class),
+				environment.getProperty("kill_cmd", String.class));
+		return processHelper;
 	}
 
 	void setSocketAPI(SocketApi socketApi) {
@@ -49,70 +69,62 @@ public class TranscoderFacade {
 
 	public void start() {
 
-		if (getState() == State.STOPPED) {
-			String startCmd = environment.getProperty("start_cmd");
-			ProcessBuilder builder = new ProcessBuilder(startCmd.split(" "));
-			try {
-				process = builder.start();
-			} catch (IOException e) {
-				destroyProcess();
-				throw new RuntimeException(e);
-			}
+		if (!isStarted()) {
+			processHelper.startProcess(environment.getProperty("start_cmd"));
 		}
+		updateConfiguration();
+	}
+
+	private boolean isStarted() {
+		return processHelper.isProcessRunning(environment.getProperty("process_name"));
 	}
 
 	public void stop() {
 
-		destroyProcess();
-	}
-
-	private void destroyProcess() {
-		if (process != null) {
-			closeStream(process.getErrorStream());
-			closeStream(process.getInputStream());
-			closeStream(process.getOutputStream());
-			process.destroy();
-			process = null;
-		}
-	}
-
-	private void closeStream(Closeable stream) {
-		try {
-			stream.close();
-		} catch (IOException e) {
-
-		}
+		processHelper.destroyProcess(environment.getProperty("process_name"));
 	}
 
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
+		if (isStarted()) {
+			updateConfiguration();
+		}
 	}
 
-	private boolean isEqual(Object first, Object second){
-		if(first == null && second == null){
-			return true;
-		}else if(first == null || second == null){
-			return false;
-		}
-		return first.equals(second);
+	private void updateConfiguration() {
+		setFps(configuration.getFps());
+		setBitrate(configuration.getBitrate());
+		setSize(configuration.getSize());
 	}
 
 	private void setFps(int fps) {
-		socketApi.writeToSocket(JSONApi.objectToJson(new EventBuilder().withAction(ACTION).withParam("fps", fps).withFilterId(1002).build()));
-		socketApi.writeToSocket(JSONApi.objectToJson(new EventBuilder().withAction(ACTION).withParam("fps", fps).withFilterId(1001).build()));
-		socketApi.writeToSocket(JSONApi.objectToJson(new EventBuilder().withAction(ACTION).withParam("fps", fps).withFilterId(1000).build()));
+		socketApi.writeToSocket(JSONApi
+				.objectToJson(new EventBuilder().withAction(ACTION).withParam("fps", fps).withFilterId(1002).build()));
+		socketApi.writeToSocket(JSONApi
+				.objectToJson(new EventBuilder().withAction(ACTION).withParam("fps", fps).withFilterId(1001).build()));
+		socketApi.writeToSocket(JSONApi
+				.objectToJson(new EventBuilder().withAction(ACTION).withParam("fps", fps).withFilterId(1000).build()));
 	}
 
 	private void setBitrate(Bitrate bitrate) {
-		socketApi.writeToSocket(JSONApi.objectToJson(new EventBuilder().withAction(ACTION).withParam("bitrate", bitrate.getBitrate()/4).withFilterId(1002).build()));
-		socketApi.writeToSocket(JSONApi.objectToJson(new EventBuilder().withAction(ACTION).withParam("bitrate", bitrate.getBitrate()/2).withFilterId(1001).build()));
-		socketApi.writeToSocket(JSONApi.objectToJson(new EventBuilder().withAction(ACTION).withParam("bitrate", bitrate.getBitrate()).withFilterId(1000).build()));
+		socketApi.writeToSocket(JSONApi.objectToJson(new EventBuilder().withAction(ACTION)
+				.withParam("bitrate", BitrateMapper.getBitrate(bitrate) / 4).withFilterId(1002).build()));
+		socketApi.writeToSocket(JSONApi.objectToJson(new EventBuilder().withAction(ACTION)
+				.withParam("bitrate", BitrateMapper.getBitrate(bitrate) / 2).withFilterId(1001).build()));
+		socketApi.writeToSocket(JSONApi.objectToJson(new EventBuilder().withAction(ACTION)
+				.withParam("bitrate", BitrateMapper.getBitrate(bitrate)).withFilterId(1000).build()));
 	}
 
 	private void setSize(Size size) {
-		socketApi.writeToSocket(JSONApi.objectToJson(new EventBuilder().withAction(ACTION).withParam("width", size.getWidth()/2).withParam("height", size.getHeight()/2).withFilterId(2002).build()));
-		socketApi.writeToSocket(JSONApi.objectToJson(new EventBuilder().withAction(ACTION).withParam("width", size.getWidth()).withParam("height", size.getHeight()).withFilterId(2001).build()));
-		socketApi.writeToSocket(JSONApi.objectToJson(new EventBuilder().withAction(ACTION).withParam("width", size.getWidth()).withParam("height", size.getHeight()).withFilterId(2000).build()));
+		socketApi.writeToSocket(JSONApi
+				.objectToJson(new EventBuilder().withAction(ACTION).withParam("width", SizeMapper.getWidth(size) / 2)
+						.withParam("height", SizeMapper.getHeight(size) / 2).withFilterId(2002).build()));
+		socketApi.writeToSocket(
+				JSONApi.objectToJson(new EventBuilder().withAction(ACTION).withParam("width", SizeMapper.getWidth(size))
+						.withParam("height", SizeMapper.getHeight(size)).withFilterId(2001).build()));
+		socketApi.writeToSocket(
+				JSONApi.objectToJson(new EventBuilder().withAction(ACTION).withParam("width", SizeMapper.getWidth(size))
+						.withParam("height", SizeMapper.getHeight(size)).withFilterId(2000).build()));
 	}
 
 	public Configuration getConfiguration() {
@@ -124,7 +136,7 @@ public class TranscoderFacade {
 	}
 
 	public State getState() {
-		return process != null ? State.RUNNING : State.STOPPED;
+		return processHelper.isProcessRunning(environment.getProperty("process_name")) ? State.RUNNING : State.STOPPED;
 	}
 
 }

@@ -23,10 +23,10 @@ public class JSONApiTest {
 	@Test
 	public void objectToJsonConfiguration(){
 		Configuration configuration = new Configuration();
-		configuration.setBitrate(Bitrate.KB500);
+		configuration.setBitrate(Bitrate.MB_05);
 		configuration.setFps(30);
 		configuration.setSize(Size.CIF);
-		assertEquals("{\"bitrate\":\"KB500\",\"fps\":30,\"size\":\"CIF\"}", JSONApi.objectToJson(configuration));
+		assertEquals("{\"bitrate\":\"MB_05\",\"fps\":30,\"size\":\"CIF\"}", JSONApi.objectToJson(configuration));
 	}
 
 
