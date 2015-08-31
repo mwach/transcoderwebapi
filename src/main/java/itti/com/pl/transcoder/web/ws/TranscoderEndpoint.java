@@ -32,6 +32,7 @@ public class TranscoderEndpoint {
 	}
 
 	@PayloadRoot(namespace = NAMESPACE_URI, localPart="getEncoderStateRequest")
+	@ResponsePayload
 	public GetEncoderStateResponse status() throws SoapException{
 		
 		GetEncoderStateResponse response = new GetEncoderStateResponse();
