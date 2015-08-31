@@ -99,32 +99,32 @@ public class TranscoderFacade {
 
 	private void setFps(int fps) {
 		socketApi.writeToSocket(JSONApi
-				.objectToJson(new EventBuilder().withAction(ACTION).withParam("fps", fps).withFilterId(1002).build()));
+				.objectToJson(new EventBuilder().withAction(ACTION).withParam("fps", fps).withFilterId(1002).buildOneItemList()));
 		socketApi.writeToSocket(JSONApi
-				.objectToJson(new EventBuilder().withAction(ACTION).withParam("fps", fps).withFilterId(1001).build()));
+				.objectToJson(new EventBuilder().withAction(ACTION).withParam("fps", fps).withFilterId(1001).buildOneItemList()));
 		socketApi.writeToSocket(JSONApi
-				.objectToJson(new EventBuilder().withAction(ACTION).withParam("fps", fps).withFilterId(1000).build()));
+				.objectToJson(new EventBuilder().withAction(ACTION).withParam("fps", fps).withFilterId(1000).buildOneItemList()));
 	}
 
 	private void setBitrate(Bitrate bitrate) {
 		socketApi.writeToSocket(JSONApi.objectToJson(new EventBuilder().withAction(ACTION)
-				.withParam("bitrate", BitrateMapper.getBitrate(bitrate) / 4).withFilterId(1002).build()));
+				.withParam("bitrate", BitrateMapper.getBitrate(bitrate) / 4).withFilterId(1002).buildOneItemList()));
 		socketApi.writeToSocket(JSONApi.objectToJson(new EventBuilder().withAction(ACTION)
-				.withParam("bitrate", BitrateMapper.getBitrate(bitrate) / 2).withFilterId(1001).build()));
+				.withParam("bitrate", BitrateMapper.getBitrate(bitrate) / 2).withFilterId(1001).buildOneItemList()));
 		socketApi.writeToSocket(JSONApi.objectToJson(new EventBuilder().withAction(ACTION)
-				.withParam("bitrate", BitrateMapper.getBitrate(bitrate)).withFilterId(1000).build()));
+				.withParam("bitrate", BitrateMapper.getBitrate(bitrate)).withFilterId(1000).buildOneItemList()));
 	}
 
 	private void setSize(Size size) {
 		socketApi.writeToSocket(JSONApi
 				.objectToJson(new EventBuilder().withAction(ACTION).withParam("width", SizeMapper.getWidth(size) / 2)
-						.withParam("height", SizeMapper.getHeight(size) / 2).withFilterId(2002).build()));
+						.withParam("height", SizeMapper.getHeight(size) / 2).withFilterId(2002).buildOneItemList()));
 		socketApi.writeToSocket(
 				JSONApi.objectToJson(new EventBuilder().withAction(ACTION).withParam("width", SizeMapper.getWidth(size))
-						.withParam("height", SizeMapper.getHeight(size)).withFilterId(2001).build()));
+						.withParam("height", SizeMapper.getHeight(size)).withFilterId(2001).buildOneItemList()));
 		socketApi.writeToSocket(
 				JSONApi.objectToJson(new EventBuilder().withAction(ACTION).withParam("width", SizeMapper.getWidth(size))
-						.withParam("height", SizeMapper.getHeight(size)).withFilterId(2000).build()));
+						.withParam("height", SizeMapper.getHeight(size)).withFilterId(2000).buildOneItemList()));
 	}
 
 	public Configuration getConfiguration() {

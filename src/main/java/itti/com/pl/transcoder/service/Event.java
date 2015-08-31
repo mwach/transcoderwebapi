@@ -43,6 +43,14 @@ final class Event {
 			validateEvent();
 			return event;
 		}
+
+		public Map<String, Event[]> buildOneItemList(){
+			Map<String, Event[]> map = new HashMap<>();
+			map.put("events", new Event[]{build()});
+			return map;
+		}
+
+
 		private void validateEvent() {
 			if(event.action == null){
 				throw new EventBuilderException("action not provided");

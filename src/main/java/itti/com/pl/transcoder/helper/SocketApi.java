@@ -1,6 +1,7 @@
 package itti.com.pl.transcoder.helper;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Socket;
 
 import org.apache.commons.logging.Log;
@@ -19,6 +20,7 @@ public class SocketApi {
 	}
 
 	public void writeToSocket(String data){
+		LOG.info(String.format("Writing data to the socket: %s", data));
 		writeToSocket(data.getBytes());
 	}
 
@@ -27,9 +29,11 @@ public class SocketApi {
 		try(Socket socket = new Socket(ip, port)){
 			socket.getOutputStream().write(data);
 			byte[] response = new byte[4096];
-			socket.getInputStream().read(response, 0, response.length);
-			LOG.info(response);
-			LOG.info(new String(response));
+			InputStream is = socket.getInputStream();
+			if(is.available() > 0){
+				is.read(response, 0, is.available());
+			}
+			LOG.info(String.format("Read data from socket: %s", new String(response)));
 		}catch (IOException e) {
 		}
 	}
