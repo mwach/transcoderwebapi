@@ -10,7 +10,6 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.ws.transport.http.MessageDispatcherServlet;
 
 import itti.com.pl.transcoder.config.WebAppConfig;
-import itti.com.pl.transcoder.config.WebServiceSoapConfig;
 
 public class Initializer implements WebApplicationInitializer {
 
@@ -18,8 +17,6 @@ public class Initializer implements WebApplicationInitializer {
 
 		AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
 		ctx.register(WebAppConfig.class);
-
-		ctx.register(WebServiceSoapConfig.class);
 
 		ctx.setServletContext(servletContext);
 		ctx.refresh();
