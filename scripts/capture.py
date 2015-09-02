@@ -6,14 +6,14 @@ Created on Aug 31, 2015
 import subprocess
 from time import sleep
 import time
-import fcntl
-import os
-import select
 import re
-import decimal
 import urllib
-import urllib3
 import requests
+import logging
+
+#logging.basicConfig(filename='capture.log',level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
+
 
 VLC_CMD = '/usr/bin/vlc'
 MITSU_CMD = '/home/marcin/workspace/transcoderwebapiscripts/mitsuLinux'
@@ -27,21 +27,20 @@ FPS=25
 
 ENCODER_SERVER = 'http://localhost:8080/transcoderwebapi/rest/configuration'
 
-def check_rules(params):
-    settings = {}
-    settings['fps'] = '20'
-    settings['bitrate'] = 'MB_1'
-    settings['size'] = 'HD'
-    
+DEFAULT_SETTINGS = {'fps': '20', 'bitrate' : 'MB_1', 'size' : 'HD'}
+
+
+def apply_rules(params):
+    settings = DEFAULT_SETTINGS
+
     if params['Noise'] < 0.91:
         settings['bitrate'] = 'MB_2'
 
     return settings
 
 def start_process(cmd):
-    cmd_arr = cmd.split(' ')
-    process = subprocess.Popen(cmd_arr, stdout=subprocess.PIPE)
-    return process;
+    logging.debug("CMD: {0}".format(cmd))
+    return subprocess.Popen(cmd.split(' '), stdout=subprocess.PIPE)
 
 def read_data(process):
     out_b, err_b  = process.communicate()
@@ -57,22 +56,28 @@ def parse_data(data):
     return data_map
 
 def feedback_to_server(settings):
+    logging.info("server feedback: {0}".format(settings))
+
     params = urllib.parse.urlencode({
       'bitrate': settings['bitrate'],
       'fps': settings['fps'],
       'size': settings['size']
     })
     request = requests.put('{0}?{1}'.format(ENCODER_SERVER, params))
-    print(request)
-    print(request.text)
+    logging.info(request)
+    logging.info(request.text)
 
 
 if __name__ == '__main__':
+
+    logging.info('main')
 
     curr_settings = {}
     while True:
         try:
             file_name = FILE_NAME.format(time.strftime('%Y%m%d.%H%M%S'))
+            logging.debug("output file name: {0}".format(file_name))
+
             vlc_cmd = '{0} -vvv {1} --sout file/ts:{2}'.format(VLC_CMD, RTSP, file_name)
             process_vlc = start_process(vlc_cmd)
             sleep(5)
@@ -82,10 +87,12 @@ if __name__ == '__main__':
             process_mitsu = start_process(mitsu_cmd)
             data = read_data(process_mitsu)
             stats = parse_data(data)
-            settings = check_rules(stats)
+            logging.debug("file stats: {0}".format(stats))
+
+            settings = apply_rules(stats)
             if(settings != curr_settings):
                 feedback_to_server(settings)
             curr_settings = settings
         except Exception as exc:
-            print(exc)
+            logging.error(exc)
         sleep(5)
