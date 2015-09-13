@@ -32,8 +32,8 @@ public class SocketApi {
 			InputStream is = socket.getInputStream();
 			if(is.available() > 0){
 				is.read(response, 0, is.available());
+				LOG.info(String.format("Read data from socket: %s", new String(response)));
 			}
-			LOG.info(String.format("Read data from socket: %s", new String(response)));
 		}catch (IOException e) {
 		}
 	}

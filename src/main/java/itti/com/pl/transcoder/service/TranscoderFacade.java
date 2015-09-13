@@ -2,6 +2,8 @@ package itti.com.pl.transcoder.service;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ import itti.com.pl.transcoder.service.Event.EventBuilder;
 @Service
 public class TranscoderFacade {
 
+	private static final Log LOG = LogFactory.getLog(TranscoderFacade.class);
+
 	private static final String ACTION = "configure";
 
 	@Autowired
@@ -36,6 +40,7 @@ public class TranscoderFacade {
 		setProcessHelper(getDefaultProcessHelper());
 		setSocketAPI(getDefaultSocketAPI());
 		setConfiguration(getDefaultConfiguration());
+		LOG.info("postConstruct");
 	}
 
 	private void setProcessHelper(ProcessHelper processHelper) {
@@ -43,8 +48,10 @@ public class TranscoderFacade {
 	}
 
 	private SocketApi getDefaultSocketAPI() {
-		return new SocketApi(environment.getProperty("transcoder_admin_ip", String.class),
+		SocketApi socketApi = new SocketApi(environment.getProperty("transcoder_admin_ip", String.class),
 				environment.getProperty("transcoder_admin_port", Integer.class));
+		LOG.debug(socketApi);
+		return socketApi;
 	}
 
 	private Configuration getDefaultConfiguration() {
@@ -52,6 +59,8 @@ public class TranscoderFacade {
 		configuration.setFps(environment.getProperty("fps", Integer.class));
 		configuration.setBitrate(environment.getProperty("bitrate", Bitrate.class));
 		configuration.setSize(environment.getProperty("size", Size.class));
+
+		LOG.debug(configuration);
 		return configuration;
 	}
 
@@ -60,6 +69,7 @@ public class TranscoderFacade {
 				environment.getProperty("sh_cmd", String.class),
 				environment.getProperty("ps_cmd", String.class),
 				environment.getProperty("kill_cmd", String.class));
+		LOG.debug(processHelper);
 		return processHelper;
 	}
 
