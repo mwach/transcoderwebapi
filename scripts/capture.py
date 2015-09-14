@@ -8,6 +8,9 @@ from time import sleep
 import time
 import re
 import urllib
+
+#install python-pip
+#pip install requests
 import requests
 import logging
 

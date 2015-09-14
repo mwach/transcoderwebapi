@@ -17,6 +17,8 @@
 			<xs:enumeration value="MB_2" />
 			<xs:enumeration value="MB_1" />
 			<xs:enumeration value="MB_05" />
+			<xs:enumeration value="MB_025" />
+			<xs:enumeration value="MB_0125" />
 		</xs:restriction>
 	</xs:simpleType>
 

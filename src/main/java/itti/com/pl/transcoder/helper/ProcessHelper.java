@@ -2,6 +2,7 @@ package itti.com.pl.transcoder.helper;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,24 +49,22 @@ public class ProcessHelper {
 		String pid = "";
 		try {
 			process = startProcess(pidCmd);
-			byte[] output = new byte[1024];
-			byte[] err = new byte[1024];
-			process.getInputStream().read(output);
-			process.getErrorStream().read(err);
-			String errStr = new String(err).trim();
-			if(!errStr.isEmpty()){
-				LOG.warn(errStr);
-			}
-			pid = new String(output).trim();
-			if(!pid.isEmpty()){
-				LOG.info(pid);
-			}
+			logWarnNotEmpty(readStream(process.getErrorStream()));
+
+			pid = readStream(process.getInputStream());
+			logInfoNotEmpty(pid);
 		} catch (IOException e) {
 			LOG.warn(e.getLocalizedMessage(), e);
 		} finally {
 			destroyProcess(process);
 		}
 		return pid;
+	}
+
+	private String readStream(InputStream errorStream) throws IOException {
+		byte[] output = new byte[1024];
+		errorStream.read(output);
+		return new String(output).trim();
 	}
 
 	public void destroyProcess(String name) {
@@ -75,6 +74,16 @@ public class ProcessHelper {
 			String killCmd = String.format(KILL_COMMAND, pid);
 			try {
 				process = startProcess(killCmd);
+
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+				}
+
+				logWarnNotEmpty(readStream(process.getErrorStream()));
+				logInfoNotEmpty(readStream(process.getInputStream()));
+			} catch (IOException e) {
+				LOG.warn(e.getLocalizedMessage(), e);
 			} finally {
 				destroyProcess(process);
 			}
@@ -99,4 +108,15 @@ public class ProcessHelper {
 		}
 	}
 
+	private void logWarnNotEmpty(String message){
+		if(LOG.isWarnEnabled() && !message.isEmpty()){
+			LOG.warn(message);
+		}
+	}
+
+	private void logInfoNotEmpty(String message){
+		if(LOG.isInfoEnabled() && !message.isEmpty()){
+			LOG.info(message);
+		}
+	}
 }
