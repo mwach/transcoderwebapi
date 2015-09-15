@@ -8,9 +8,6 @@ from time import sleep
 import time
 import re
 import urllib
-
-#install python-pip
-#pip install requests
 import requests
 import logging
 
@@ -25,9 +22,12 @@ SH_CMD = '/bin/sh'
 FILE_NAME = '/tmp/{0}.mp4'
 
 RTSP = 'rtsp://127.0.0.1:8554/plainrtp'
-WIDTH=320
-HEIGHT=240
-FPS=10
+WIDTH=352
+HEIGHT=288
+FPS=15
+
+STATS_LEN=10
+STATS_FILE='capture.csv'
 
 ENCODER_SERVER = 'http://localhost:8080/transcoderwebapi/rest/configuration'
 
@@ -80,9 +80,25 @@ def collect_stats(stats):
             STATS[k] = []
             STATS[k].append(v)
 
+def stats_collected():
     item = next (iter (STATS.values()))
-    if len(item) == 10:
-        logging.info(STATS)
+    return len(item) == STATS_LEN
+
+def export_stats_csv():
+    
+    cvs_file = open(STATS_FILE, 'w')
+    keys = list(STATS.keys())
+    keys.sort()
+    for key in keys:
+        cvs_file.write(key)
+        cvs_file.write('\n')
+        values = STATS.get(key)
+        for value in values:
+            cvs_file.write(str(value));
+            cvs_file.write('\t');
+        cvs_file.write('\n')
+    cvs_file.close()
+
 if __name__ == '__main__':
 
     logging.debug('main')
@@ -104,6 +120,8 @@ if __name__ == '__main__':
             data = read_data(process_mitsu)
             stats = parse_data(data)
             collect_stats(stats)
+            if stats_collected():
+                export_stats_csv()
             logging.info("file stats: {0}".format(stats))
 
             settings = apply_rules(stats)
