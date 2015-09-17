@@ -22,8 +22,8 @@ SH_CMD = '/bin/sh'
 FILE_NAME = '/tmp/{0}.mp4'
 
 RTSP = 'rtsp://127.0.0.1:8554/plainrtp'
-WIDTH=352
-HEIGHT=288
+WIDTH=1280
+HEIGHT=720
 FPS=15
 
 STATS_LEN=10
@@ -114,7 +114,6 @@ if __name__ == '__main__':
             sleep(15)
             process_vlc.kill()
 
-#             mitsu_cmd = '{0} {1} {2} {3} {4} 20 0'.format(MITSU_CMD, file_name, WIDTH, HEIGHT, FPS)
             mitsu_cmd = '{0} {1} {2} {3} {4}'.format(MITSU_CMD, file_name, WIDTH, HEIGHT, FPS)
             process_mitsu = start_process(mitsu_cmd)
             data = read_data(process_mitsu)
@@ -122,6 +121,8 @@ if __name__ == '__main__':
             collect_stats(stats)
             if stats_collected():
                 export_stats_csv()
+                logging.info("STATS stored in the CSV file") 
+                exit(0)
             logging.info("file stats: {0}".format(stats))
 
             settings = apply_rules(stats)
@@ -130,4 +131,4 @@ if __name__ == '__main__':
             curr_settings = settings
         except Exception as exc:
             logging.error(exc)
-        sleep(5)
+#        sleep(5)
