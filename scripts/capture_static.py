@@ -19,12 +19,16 @@ STATS = {}
 VLC_CMD = '/usr/bin/cvlc'
 MITSU_CMD = '/home/marcin/workspace/transcoderwebapiscripts/mitsuLinux'
 SH_CMD = '/bin/sh'
-FILE_NAME = '/tmp/{0}.mp4'
+FILE_NAME = '/home/marcin/Downloads/trailer.mp4'
+#FILE_NAME = '/home/marcin/Downloads/voxnews.dv'
 
 RTSP = 'rtsp://127.0.0.1:8554/plainrtp'
-WIDTH=720
-HEIGHT=576
-FPS=5
+#WIDTH=720
+#HEIGHT=576
+#FPS=25
+WIDTH=1280
+HEIGHT=720
+FPS=24
 
 STATS_LEN=10
 STATS_FILE='capture.csv'
@@ -106,15 +110,7 @@ if __name__ == '__main__':
     curr_settings = {}
     while True:
         try:
-            file_name = FILE_NAME.format(time.strftime('%Y%m%d.%H%M%S'))
-            logging.debug("output file name: {0}".format(file_name))
-
-            vlc_cmd = '{0} -vvv {1} --sout file/ts:{2}'.format(VLC_CMD, RTSP, file_name)
-            process_vlc = start_process(vlc_cmd)
-            sleep(15)
-            process_vlc.kill()
-
-            mitsu_cmd = '{0} {1} {2} {3} {4}'.format(MITSU_CMD, file_name, WIDTH, HEIGHT, FPS)
+            mitsu_cmd = '{0} {1} {2} {3} {4}'.format(MITSU_CMD, FILE_NAME, WIDTH, HEIGHT, FPS)
             process_mitsu = start_process(mitsu_cmd)
             data = read_data(process_mitsu)
             stats = parse_data(data)

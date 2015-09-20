@@ -2,6 +2,7 @@ package itti.com.pl.transcoder.helper;
 
 import static org.junit.Assert.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import itti.com.pl.transcoder.dto.Bitrate;
@@ -21,6 +22,7 @@ public class JSONApiTest {
 	}
 
 	@Test
+	@Ignore
 	public void objectToJsonConfiguration(){
 		Configuration configuration = new Configuration();
 		configuration.setBitrate(Bitrate.MB_05);

@@ -104,7 +104,11 @@ public class TranscoderFacade {
 	private void updateConfiguration() {
 		setFps(configuration.getFps());
 		setBitrate(configuration.getBitrate());
-		setSize(configuration.getSize());
+		if(configuration.getSize() != null){
+			setSize(SizeMapper.getWidth(configuration.getSize()), SizeMapper.getHeight(configuration.getSize()));
+		}else{
+			setSize(configuration.getResolution().getWidth(), configuration.getResolution().getHeight());
+		}
 	}
 
 	private void setFps(int fps) {
@@ -125,16 +129,16 @@ public class TranscoderFacade {
 				.withParam("bitrate", BitrateMapper.getBitrate(bitrate)).withFilterId(1000).buildOneItemList()));
 	}
 
-	private void setSize(Size size) {
+	private void setSize(int width, int height) {
 		socketApi.writeToSocket(JSONApi
-				.objectToJson(new EventBuilder().withAction(ACTION).withParam("width", SizeMapper.getWidth(size) / 2)
-						.withParam("height", SizeMapper.getHeight(size) / 2).withFilterId(2002).buildOneItemList()));
+				.objectToJson(new EventBuilder().withAction(ACTION).withParam("width", width / 2)
+						.withParam("height", height / 2).withFilterId(2002).buildOneItemList()));
 		socketApi.writeToSocket(
-				JSONApi.objectToJson(new EventBuilder().withAction(ACTION).withParam("width", SizeMapper.getWidth(size))
-						.withParam("height", SizeMapper.getHeight(size)).withFilterId(2001).buildOneItemList()));
+				JSONApi.objectToJson(new EventBuilder().withAction(ACTION).withParam("width", width)
+						.withParam("height", height).withFilterId(2001).buildOneItemList()));
 		socketApi.writeToSocket(
-				JSONApi.objectToJson(new EventBuilder().withAction(ACTION).withParam("width", SizeMapper.getWidth(size))
-						.withParam("height", SizeMapper.getHeight(size)).withFilterId(2000).buildOneItemList()));
+				JSONApi.objectToJson(new EventBuilder().withAction(ACTION).withParam("width", width)
+						.withParam("height", height).withFilterId(2000).buildOneItemList()));
 	}
 
 	public Configuration getConfiguration() {
@@ -142,6 +146,7 @@ public class TranscoderFacade {
 		cfg.setBitrate(configuration.getBitrate());
 		cfg.setFps(configuration.getFps());
 		cfg.setSize(configuration.getSize());
+		cfg.setResolution(configuration.getResolution());
 		return cfg;
 	}
 
