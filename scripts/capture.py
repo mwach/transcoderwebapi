@@ -16,17 +16,18 @@ logging.basicConfig(filename='capture.log',level=logging.INFO)
 
 STATS = {}
 
+#http://stackoverflow.com/questions/10459338/save-continuous-rtsp-stream-to-5-10-minute-long-mp4-files
 VLC_CMD = '/usr/bin/cvlc'
 MITSU_CMD = '/home/marcin/workspace/transcoderwebapiscripts/mitsuLinux'
 SH_CMD = '/bin/sh'
-FILE_NAME = '/tmp/{0}.mp4'
+FILE_NAME = '/tmp/{0}_{1}_{2}_{3}.mp4'
 
 RTSP = 'rtsp://127.0.0.1:8554/plainrtp'
-WIDTH=720
-HEIGHT=576
+WIDTH=1280
+HEIGHT=720
 FPS=5
 
-STATS_LEN=10
+STATS_LEN=5
 STATS_FILE='capture.csv'
 
 ENCODER_SERVER = 'http://localhost:8080/transcoderwebapi/rest/configuration'
@@ -106,7 +107,7 @@ if __name__ == '__main__':
     curr_settings = {}
     while True:
         try:
-            file_name = FILE_NAME.format(time.strftime('%Y%m%d.%H%M%S'))
+            file_name = FILE_NAME.format(WIDTH, HEIGHT, FPS, time.strftime('%Y%m%d.%H%M%S'))
             logging.debug("output file name: {0}".format(file_name))
 
             vlc_cmd = '{0} -vvv {1} --sout file/ts:{2}'.format(VLC_CMD, RTSP, file_name)
