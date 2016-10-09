@@ -57,6 +57,7 @@ public class TranscoderFacade {
 	private Configuration getDefaultConfiguration() {
 		Configuration configuration = new Configuration();
 		configuration.setFps(environment.getProperty("fps", Integer.class));
+		configuration.setGop(environment.getProperty("gop", Integer.class));
 		configuration.setBitrate(environment.getProperty("bitrate", Bitrate.class));
 		configuration.setSize(environment.getProperty("size", Size.class));
 
@@ -103,6 +104,7 @@ public class TranscoderFacade {
 
 	private void updateConfiguration() {
 		setFps(configuration.getFps());
+		setGop(configuration.getGop());
 		setBitrate(configuration.getBitrate());
 		if(configuration.getSize() != null){
 			setSize(SizeMapper.getWidth(configuration.getSize()), SizeMapper.getHeight(configuration.getSize()));
@@ -118,6 +120,15 @@ public class TranscoderFacade {
 				.objectToJson(new EventBuilder().withAction(ACTION).withParam("fps", fps).withFilterId(1001).buildOneItemList()));
 		socketApi.writeToSocket(JSONApi
 				.objectToJson(new EventBuilder().withAction(ACTION).withParam("fps", fps).withFilterId(1000).buildOneItemList()));
+	}
+
+	private void setGop(int gop) {
+		socketApi.writeToSocket(JSONApi
+				.objectToJson(new EventBuilder().withAction(ACTION).withParam("gop", gop).withFilterId(3).buildOneItemList()));
+//		socketApi.writeToSocket(JSONApi
+//				.objectToJson(new EventBuilder().withAction(ACTION).withParam("gop", gop).withFilterId(1001).buildOneItemList()));
+//		socketApi.writeToSocket(JSONApi
+//				.objectToJson(new EventBuilder().withAction(ACTION).withParam("gop", gop).withFilterId(1000).buildOneItemList()));
 	}
 
 	private void setBitrate(Bitrate bitrate) {
@@ -145,6 +156,7 @@ public class TranscoderFacade {
 		Configuration cfg = new Configuration();
 		cfg.setBitrate(configuration.getBitrate());
 		cfg.setFps(configuration.getFps());
+		cfg.setGop(configuration.getGop());
 		cfg.setSize(configuration.getSize());
 		cfg.setResolution(configuration.getResolution());
 		return cfg;

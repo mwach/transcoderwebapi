@@ -17,8 +17,14 @@ logging.basicConfig(filename='capture.log',level=logging.INFO)
 STATS = {}
 
 #http://stackoverflow.com/questions/10459338/save-continuous-rtsp-stream-to-5-10-minute-long-mp4-files
+
+#/usr/bin/cvlc -vvv rtsp://127.0.0.1:8554/plainrtp --sout "#transcode{vcodec='h264',fps='5.0'}:standard{access='file',dst='tmp.mp4'}"
+
+
 VLC_CMD = '/usr/bin/cvlc'
-MITSU_CMD = '/home/marcin/workspace/transcoderwebapiscripts/mitsuLinux'
+#MITSU_CMD = '/home/marcin/workspace/transcoderwebapiscripts/mitsuLinux'
+#new mitsu
+MITSU_CMD = '/home/marcin/Downloads/newC/src/mitsuWin64.exe'
 SH_CMD = '/bin/sh'
 FILE_NAME = '/tmp/{0}_{1}_{2}_{3}.mp4'
 
@@ -27,7 +33,7 @@ WIDTH=1280
 HEIGHT=720
 FPS=5
 
-STATS_LEN=5
+STATS_LEN=1
 STATS_FILE='capture.csv'
 
 ENCODER_SERVER = 'http://localhost:8080/transcoderwebapi/rest/configuration'
@@ -110,12 +116,14 @@ if __name__ == '__main__':
             file_name = FILE_NAME.format(WIDTH, HEIGHT, FPS, time.strftime('%Y%m%d.%H%M%S'))
             logging.debug("output file name: {0}".format(file_name))
 
-            vlc_cmd = '{0} -vvv {1} --sout file/ts:{2}'.format(VLC_CMD, RTSP, file_name)
-            process_vlc = start_process(vlc_cmd)
-            sleep(15)
-            process_vlc.kill()
+#            vlc_cmd = '{0} -vvv {1} --sout file/ts:{2}'.format(VLC_CMD, RTSP, file_name)
+#            process_vlc = start_process(vlc_cmd)
+#            sleep(5)
+#            process_vlc.kill()
 
             mitsu_cmd = '{0} {1} {2} {3} {4}'.format(MITSU_CMD, file_name, WIDTH, HEIGHT, FPS)
+            mitsu_cmd = '{0} {1} {2} {3} {4}'.format(MITSU_CMD, '/home/marcin/Downloads/trailer.mp4', WIDTH, HEIGHT, FPS)
+            logging.debug(mitsu_cmd)
             process_mitsu = start_process(mitsu_cmd)
             data = read_data(process_mitsu)
             stats = parse_data(data)
@@ -132,4 +140,3 @@ if __name__ == '__main__':
             curr_settings = settings
         except Exception as exc:
             logging.error(exc)
-#        sleep(5)

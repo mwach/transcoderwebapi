@@ -18,7 +18,6 @@ import itti.com.pl.transcoder.dto.Configuration;
 import itti.com.pl.transcoder.dto.Size;
 import itti.com.pl.transcoder.helper.SocketApi;
 
-@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class, 
 loader = AnnotationConfigContextLoader.class)
@@ -39,7 +38,6 @@ public class TranscoderFacadeTest {
 		Assert.assertNotNull(environment.getProperty("size"));
 		socketApi = Mockito.mock(SocketApi.class);		
 		transcoderFacade.setSocketAPI(socketApi);
-		transcoderFacade.setConfiguration(new Configuration());
 		transcoderFacade.start();
 	}
 

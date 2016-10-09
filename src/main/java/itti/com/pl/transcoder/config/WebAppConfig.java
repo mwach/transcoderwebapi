@@ -2,8 +2,6 @@ package itti.com.pl.transcoder.config;
 
 import java.util.List;
 
-import org.springframework.aop.TargetSource;
-import org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -19,9 +17,6 @@ import org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidating
 import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
 import org.springframework.xml.xsd.SimpleXsdSchema;
 import org.springframework.xml.xsd.XsdSchema;
-
-import itti.com.pl.transcoder.service.TranscoderFacade;
-import itti.com.pl.transcoder.service.aop.LoggerAdvice;
 
 @Configuration
 @EnableWs
@@ -69,29 +64,8 @@ public class WebAppConfig extends WsConfigurerAdapter {
 	public XsdSchema schema() {
 		return new SimpleXsdSchema(new ClassPathResource("transcoderwebapi.xsd"));
 	}
-
-	@Bean
-	AbstractAutoProxyCreator autoProxyCreator() {
-	    return new AbstractAutoProxyCreator() {
-	        /**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override 
-	        protected Object[] getAdvicesAndAdvisorsForBean(Class<?> beanClass, String beanName, TargetSource customTargetSource) {
-	            if (TranscoderFacade.class.isAssignableFrom(beanClass)) {
-	                return new Object[] {loggerAdvice()};
-	            } else {
-	                return DO_NOT_PROXY;
-	            }
-	        }
-	    };
-	}
-
-	@Bean
-	LoggerAdvice loggerAdvice() {
-	    return new LoggerAdvice();
-	}
-
 }
+
+
+
+
