@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import itti.com.pl.transcoder.dto.Bitrate;
 import itti.com.pl.transcoder.dto.Configuration;
 import itti.com.pl.transcoder.dto.Size;
+import itti.com.pl.transcoder.helper.ResolutionMapper;
 import itti.com.pl.transcoder.service.TranscoderFacade;
 
 @Controller
@@ -49,13 +50,21 @@ public class TranscoderRestController {
 	@RequestMapping(value="/configuration", method=RequestMethod.PUT)
 	@ResponseStatus(value=HttpStatus.OK)
 	public void setConfiguration(
-			@RequestParam Bitrate bitrate,
-			@RequestParam int fps,
-			@RequestParam Size size) {
+			@RequestParam(required=false) Bitrate bitrate,
+			@RequestParam(required=false) Integer fps,
+			@RequestParam(required=false) Size size,
+			@RequestParam(required=false) String resolution,
+			@RequestParam(required=false) Integer gop
+			) {
+		if(resolution != null && size != null){
+			throw new RuntimeException("Both resolution and size specified.");
+		}
 		Configuration configuration = new Configuration();
 		configuration.setBitrate(bitrate);
 		configuration.setFps(fps);
+		configuration.setGop(gop);
 		configuration.setSize(size);
+		configuration.setResolution(ResolutionMapper.getResolution(resolution));
 		transcoderFacade.setConfiguration(configuration);
 	}
 

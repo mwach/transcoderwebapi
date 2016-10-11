@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import itti.com.pl.transcoder.dto.Bitrate;
 import itti.com.pl.transcoder.dto.Configuration;
+import itti.com.pl.transcoder.dto.Resolution;
 import itti.com.pl.transcoder.dto.Size;
 import itti.com.pl.transcoder.dto.State;
 import itti.com.pl.transcoder.helper.BitrateMapper;
@@ -56,10 +57,11 @@ public class TranscoderFacade {
 
 	private Configuration getDefaultConfiguration() {
 		Configuration configuration = new Configuration();
-		configuration.setFps(environment.getProperty("fps", Integer.class));
-		configuration.setGop(environment.getProperty("gop", Integer.class));
-		configuration.setBitrate(environment.getProperty("bitrate", Bitrate.class));
-		configuration.setSize(environment.getProperty("size", Size.class));
+		configuration.setFps(environment.getProperty("fps", Integer.class, null));
+		configuration.setGop(environment.getProperty("gop", Integer.class, null));
+		configuration.setBitrate(environment.getProperty("bitrate", Bitrate.class, null));
+		configuration.setSize(environment.getProperty("size", Size.class, null));
+		configuration.setResolution(environment.getProperty("resolution", Resolution.class, null));
 
 		LOG.debug(configuration);
 		return configuration;
@@ -103,12 +105,18 @@ public class TranscoderFacade {
 	}
 
 	private void updateConfiguration() {
-		setFps(configuration.getFps());
-		setGop(configuration.getGop());
-		setBitrate(configuration.getBitrate());
+		if(configuration.getFps() != null){
+			setFps(configuration.getFps());
+		}
+		if(configuration.getGop() != null){
+			setGop(configuration.getGop());
+		}
+		if(configuration.getBitrate() != null){
+			setBitrate(configuration.getBitrate());
+		}
 		if(configuration.getSize() != null){
 			setSize(SizeMapper.getWidth(configuration.getSize()), SizeMapper.getHeight(configuration.getSize()));
-		}else{
+		}else if(configuration.getResolution() != null){
 			setSize(configuration.getResolution().getWidth(), configuration.getResolution().getHeight());
 		}
 	}
