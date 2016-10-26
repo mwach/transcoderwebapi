@@ -6,7 +6,7 @@ import java.util.Map;
 final class Event {
 
 	private String action;
-	private Map<String, Integer> params = new HashMap<>();
+	private Map<String, Object> params = new HashMap<>();
 	int filterId;
 
 	private Event(){}
@@ -17,7 +17,7 @@ final class Event {
 	public int getFilterId(){
 		return filterId;
 	}
-	public Map<String, Integer> getParams(){
+	public Map<String, Object> getParams(){
 		return new HashMap<>(params);
 	}
 	public static class EventBuilder{
@@ -30,10 +30,11 @@ final class Event {
 			event.action = action;
 			return this;
 		}
-		public EventBuilder withParam(String key, int value){
+		public EventBuilder withParam(String key, Object value){
 			event.params.put(key, value);
 			return this;
 		}
+
 		public EventBuilder withFilterId(int filterId){
 			event.filterId = filterId;
 			return this;

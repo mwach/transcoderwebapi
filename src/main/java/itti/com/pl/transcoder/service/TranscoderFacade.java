@@ -154,4 +154,8 @@ public class TranscoderFacade {
 		return processHelper.isProcessRunning(environment.getProperty("process_name")) ? State.RUNNING : State.STOPPED;
 	}
 
+	public void setParameter(Parameters parameterName, Object parameterValue) {
+		socketApi.writeToSocket(JSONApi
+				.objectToJson(new EventBuilder().withAction(ACTION).withParam(parameterName.name().toLowerCase(), parameterValue).withFilterId(3).buildOneItemList()));
+	}
 }
